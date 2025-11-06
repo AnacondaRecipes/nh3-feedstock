@@ -1,0 +1,65 @@
+{% set name = "nh3" %}
+{% set version = "0.3.2" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-${{ version }}.tar.gz
+  script:
+    # Setup build env
+    - export CARGO_PROFILE_RELEASE_STRIP=symbols  # [unix]
+    - export CARGO_PROFILE_RELEASE_LTO=fat  # [unix]
+    - set CARGO_PROFILE_RELEASE_STRIP=symbols  # [win]
+    - set CARGO_PROFILE_RELEASE_LTO=fat  # [win]
+    # Build
+    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+    # Licenses generation
+    - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
+  sha256: f394759a06df8b685a4ebfb1874fb67a9cbfd58c64fc5ed587a663c0e63ec376
+
+build:
+  number: 0
+  skip: true  # [py<38]
+
+requirements:
+  build:
+    - {{ stdlib("c") }}
+    - {{ compiler("c") }}
+    - {{ compiler("rust") }}
+    - cargo-bundle-licenses
+  host:
+    - pip
+    - python
+    - maturin >=1.0,<2.0
+  run:
+    - python
+
+test:
+  source_files:
+    - tests
+  imports:
+    - nh3
+  commands:
+    - pip check
+    - pytest -v tests
+  requires:
+    - pip
+    - pytest
+
+about:
+  home: https://github.com/messense/nh3
+  summary: Python binding to Ammonia HTML sanitizer Rust crate
+  license: MIT
+  license_family: MIT
+  license_file:
+    - LICENSE
+    - THIRDPARTY.yml
+  description: Python bindings to the ammonia HTML sanitization library.
+  dev_url: https://github.com/messense/nh3
+  doc_url: https://nh3.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - aosipov
