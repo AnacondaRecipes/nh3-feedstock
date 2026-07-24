@@ -1,5 +1,5 @@
 {% set name = "nh3" %}
-{% set version = "0.3.2" %}
+{% set version = "0.3.6" %}
 
 package:
   name: {{ name }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: f394759a06df8b685a4ebfb1874fb67a9cbfd58c64fc5ed587a663c0e63ec376
+  sha256: f3736c9dd3d1856f80cd031715b84ca75cda2bbb1ac802c3da26bfce590838d7
 
 build:
   number: 0
@@ -17,8 +17,10 @@ build:
     - export CARGO_PROFILE_RELEASE_LTO=fat  # [unix]
     - set CARGO_PROFILE_RELEASE_STRIP=symbols  # [win]
     - set CARGO_PROFILE_RELEASE_LTO=fat  # [win]
+
     # Build
     - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  
     # Licenses generation
     - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
   skip: true  # [py<38]
