@@ -17,8 +17,10 @@ build:
     - export CARGO_PROFILE_RELEASE_LTO=fat  # [unix]
     - set CARGO_PROFILE_RELEASE_STRIP=symbols  # [win]
     - set CARGO_PROFILE_RELEASE_LTO=fat  # [win]
+
     # Build
     - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  
     # Licenses generation
     - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
   skip: true  # [py<38]
